@@ -1,0 +1,51 @@
+{
+  "compilerOptions": {
+    /* Language */
+    "target": "ES2022",
+    "lib": ["ES2022"],
+
+    /* Module */
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+
+    /* Directories */
+    "rootDir": "./src",
+    "outDir": "./dist",
+
+    /* JavaScript Support */
+    "allowJs": false,
+
+    /* Emit */
+    "sourceMap": true,
+    "removeComments": false,
+
+    /* Interop */
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+
+    /* Type Checking */
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+
+    /* Paths */
+    "baseUrl": "./src",
+    "paths": {
+      "@config/*": ["config/*"],
+      "@common/*": ["common/*"],
+      "@database/*": ["database/*"],
+      "@logger/*": ["logger/*"],
+      "@middleware/*": ["middleware/*"],
+      "@modules/*": ["modules/*"],
+      "@routes/*": ["routes/*"],
+      "@utils/*": ["utils/*"],
+      "@validators/*": ["validators/*"],
+      "@types/*": ["types/*"]
+    }
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
+}
