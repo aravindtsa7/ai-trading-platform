@@ -1,2 +1,3 @@
-export { env } from "./env";
-export { appConfig } from "./app.config";
+export * from "./app.config";
+export * from "./env";
+export * from "./jwt.config";

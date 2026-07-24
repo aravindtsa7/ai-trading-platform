@@ -39,7 +39,7 @@ model User {
 
 model RefreshToken {
   id         String   @id @default(cuid())
-  token      String   @unique
+  token      String   @db.Text
   expiresAt  DateTime
   revokedAt  DateTime?
 
