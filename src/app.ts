@@ -42,7 +42,7 @@ app.get("/error", (_req, _res) => {
   throw new AppError("This is a test error", 400);
 });
 */
-app.use(routes);
+app.use("/api/v1", routes);
 
 /*
 |--------------------------------------------------------------------------
