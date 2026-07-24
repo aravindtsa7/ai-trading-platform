@@ -31,20 +31,9 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
 
-    /* Paths */
-    "baseUrl": "./src",
-    "paths": {
-      "@config/*": ["config/*"],
-      "@common/*": ["common/*"],
-      "@database/*": ["database/*"],
-      "@logger/*": ["logger/*"],
-      "@middleware/*": ["middleware/*"],
-      "@modules/*": ["modules/*"],
-      "@routes/*": ["routes/*"],
-      "@utils/*": ["utils/*"],
-      "@validators/*": ["validators/*"],
-      "@types/*": ["types/*"]
-    }
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist"]

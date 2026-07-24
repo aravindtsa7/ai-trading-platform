@@ -25,6 +25,11 @@ uploads/
 prisma/dev.db
 prisma/dev.db-journal
 
+# Need to verify
+.windsurf
+.agents
+.claude
+
 # IDE
 .vscode/
 .idea/
@@ -42,3 +47,4 @@ Thumbs.db
 
 # Generated
 *.tsbuildinfo
+/src/generated/prisma
