@@ -3,6 +3,10 @@ import cors from "cors";
 import helmet from "helmet";
 import compression from "compression";
 import morgan from "morgan";
+import routes from "./routes";
+
+import { errorMiddleware } from "./middleware/error.middleware";
+import { AppError } from "./common/exceptions";
 
 const app = express();
 
@@ -23,9 +27,8 @@ app.use(morgan("dev"));
 
 /*
 |--------------------------------------------------------------------------
-| Health Check
+| Routes
 |--------------------------------------------------------------------------
-*/
 
 app.get("/health", (_req, res) => {
   res.status(200).json({
@@ -34,5 +37,19 @@ app.get("/health", (_req, res) => {
     version: "1.0.0",
   });
 });
+
+app.get("/error", (_req, _res) => {
+  throw new AppError("This is a test error", 400);
+});
+*/
+app.use(routes);
+
+/*
+|--------------------------------------------------------------------------
+| Error Middleware (Always Last)
+|--------------------------------------------------------------------------
+*/
+
+app.use(errorMiddleware);
 
 export default app;
