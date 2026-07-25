@@ -73,4 +73,22 @@ export class AuthController {
     }
   };
 
+    refreshToken = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const result = await this.authService.refreshToken(req.body);
+
+      return ApiResponse.success(res, {
+        message: "Token refreshed successfully",
+        statusCode: 200,
+        data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
 }

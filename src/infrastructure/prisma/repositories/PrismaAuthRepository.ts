@@ -43,4 +43,25 @@ export class PrismaAuthRepository implements IAuthRepository {
       },
     });
   }
+
+  async findRefreshToken(token: string) {
+    return prisma.refreshToken.findFirst({
+      where: {
+        token,
+      },
+    });
+  }
+
+  async revokeRefreshToken(token: string): Promise<void> {
+    await prisma.refreshToken.updateMany({
+      where: {
+        token,
+        revokedAt: null,
+      },
+      data: {
+        revokedAt: new Date(),
+      },
+    });
+  }
+
 }

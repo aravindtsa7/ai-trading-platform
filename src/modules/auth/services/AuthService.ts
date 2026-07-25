@@ -13,7 +13,9 @@ import { UnauthorizedError } from "../../../common/exceptions/UnauthorizedError"
 import {
   generateAccessToken,
   generateRefreshToken,
+  verifyRefreshToken,
 } from "../../../common/jwt";
+import { RefreshTokenDto } from "../dto/refresh-token.dto";
 
 export class AuthService {
   constructor(
@@ -106,6 +108,59 @@ export class AuthService {
       lastLoginAt: user.lastLoginAt,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
+    };
+  }
+
+    async refreshToken(
+    data: RefreshTokenDto
+  ): Promise<{
+    accessToken: string;
+    refreshToken: string;
+  }> {
+    const payload = verifyRefreshToken(data.refreshToken);
+
+    const storedToken = await this.authRepository.findRefreshToken(
+      data.refreshToken
+    );
+
+    if (!storedToken) {
+      throw new UnauthorizedError("Invalid refresh token.");
+    }
+
+    if (storedToken.revokedAt) {
+      throw new UnauthorizedError("Refresh token has been revoked.");
+    }
+
+    if (storedToken.expiresAt < new Date()) {
+      throw new UnauthorizedError("Refresh token has expired.");
+    }
+
+    const accessToken = generateAccessToken({
+      userId: payload.userId,
+      email: payload.email,
+      role: payload.role,
+    });
+
+    const newRefreshToken = generateRefreshToken({
+      userId: payload.userId,
+      email: payload.email,
+      role: payload.role,
+    });
+
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 7);
+
+    await this.authRepository.revokeRefreshToken(data.refreshToken);
+
+    await this.authRepository.saveRefreshToken(
+      payload.userId,
+      newRefreshToken,
+      expiresAt
+    );
+
+    return {
+      accessToken,
+      refreshToken: newRefreshToken,
     };
   }
 

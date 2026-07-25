@@ -13,4 +13,15 @@ export interface IAuthRepository {
     token: string,
     expiresAt: Date
   ): Promise<void>;
+
+  findRefreshToken(token: string): Promise<{
+  id: string;
+  token: string;
+  userId: string;
+  expiresAt: Date;
+  revokedAt: Date | null;
+} | null>;
+
+revokeRefreshToken(token: string): Promise<void>;
+
 }
