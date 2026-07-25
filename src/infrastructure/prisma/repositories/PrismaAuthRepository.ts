@@ -44,6 +44,17 @@ export class PrismaAuthRepository implements IAuthRepository {
     });
   }
 
+    async updateLastLogin(userId: string): Promise<void> {
+    await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        lastLoginAt: new Date(),
+      },
+    });
+  }
+
   async findRefreshToken(token: string) {
     return prisma.refreshToken.findFirst({
       where: {

@@ -7,6 +7,7 @@ import {
   registerSchema,
   loginSchema,
   refreshTokenSchema,
+  logoutSchema,
 } from "../validators/auth.validator";
 
 import { AuthController } from "../controllers/auth.controller";
@@ -36,6 +37,12 @@ router.post(
   "/refresh-token",
   validate(refreshTokenSchema),
   controller.refreshToken
+);
+
+router.post(
+  "/logout",
+  validate(logoutSchema),
+  controller.logout
 );
 
 router.get(

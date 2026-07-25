@@ -16,11 +16,12 @@ import {
   verifyRefreshToken,
 } from "../../../common/jwt";
 import { RefreshTokenDto } from "../dto/refresh-token.dto";
+import { LogoutDto } from "../dto/logout.dto";
 
 export class AuthService {
   constructor(
     private readonly authRepository: IAuthRepository
-  ) {}
+  ) { }
 
   async register(data: RegisterDto): Promise<User> {
     const existingUser = await this.authRepository.findByEmail(data.email);
@@ -60,6 +61,8 @@ export class AuthService {
       email: user.email,
       role: user.role,
     };
+    
+    await this.authRepository.updateLastLogin(user.id);
 
     const accessToken = generateAccessToken(payload);
     const refreshToken = generateRefreshToken(payload);
@@ -89,7 +92,7 @@ export class AuthService {
     };
   }
 
-    async me(userId: string) {
+  async me(userId: string) {
     const user = await this.authRepository.findById(userId);
 
     if (!user) {
@@ -111,7 +114,7 @@ export class AuthService {
     };
   }
 
-    async refreshToken(
+  async refreshToken(
     data: RefreshTokenDto
   ): Promise<{
     accessToken: string;
@@ -162,6 +165,24 @@ export class AuthService {
       accessToken,
       refreshToken: newRefreshToken,
     };
+  }
+
+  async logout(data: LogoutDto): Promise<void> {
+    verifyRefreshToken(data.refreshToken);
+
+    const storedToken = await this.authRepository.findRefreshToken(
+      data.refreshToken
+    );
+
+    if (!storedToken) {
+      throw new UnauthorizedError("Invalid refresh token.");
+    }
+
+    if (storedToken.revokedAt) {
+      throw new UnauthorizedError("Refresh token has already been revoked.");
+    }
+
+    await this.authRepository.revokeRefreshToken(data.refreshToken);
   }
 
 }

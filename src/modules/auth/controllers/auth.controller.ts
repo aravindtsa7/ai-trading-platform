@@ -91,4 +91,22 @@ export class AuthController {
     }
   };
 
+    logout = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      await this.authService.logout(req.body);
+
+      return ApiResponse.success(res, {
+        message: "Logged out successfully",
+        statusCode: 200,
+        data: null,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
 }
