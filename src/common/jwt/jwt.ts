@@ -1,4 +1,11 @@
-import jwt, { SignOptions } from "jsonwebtoken";
+import jwt, {
+  JsonWebTokenError,
+  NotBeforeError,
+  SignOptions,
+  TokenExpiredError,
+} from "jsonwebtoken";
+
+import { UnauthorizedError } from "../exceptions/UnauthorizedError";
 import { jwtConfig } from "../../config";
 
 export interface JwtPayload {
@@ -20,9 +27,49 @@ export function generateRefreshToken(payload: JwtPayload): string {
 }
 
 export function verifyAccessToken(token: string): JwtPayload {
-  return jwt.verify(token, jwtConfig.accessSecret) as JwtPayload;
+  try {
+    return jwt.verify(
+      token,
+      jwtConfig.accessSecret
+    ) as JwtPayload;
+  } catch (error) {
+
+    if (error instanceof TokenExpiredError) {
+      throw new UnauthorizedError("Access token has expired.");
+    }
+
+    if (error instanceof JsonWebTokenError) {
+      throw new UnauthorizedError("Invalid access token.");
+    }
+
+    if (error instanceof NotBeforeError) {
+      throw new UnauthorizedError("Access token is not active yet.");
+    }
+
+    throw error;
+  }
 }
 
 export function verifyRefreshToken(token: string): JwtPayload {
-  return jwt.verify(token, jwtConfig.refreshSecret) as JwtPayload;
+    try {
+    return jwt.verify(
+      token,
+      jwtConfig.accessSecret
+    ) as JwtPayload;
+  } catch (error) {
+
+    if (error instanceof TokenExpiredError) {
+      throw new UnauthorizedError("Access token has expired.");
+    }
+
+    if (error instanceof JsonWebTokenError) {
+      throw new UnauthorizedError("Invalid access token.");
+    }
+
+    if (error instanceof NotBeforeError) {
+      throw new UnauthorizedError("Access token is not active yet.");
+    }
+
+    throw error;
+  }
 }

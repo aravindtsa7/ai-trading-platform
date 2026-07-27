@@ -1,30 +1,27 @@
 {
   "compilerOptions": {
-    /* Language */
     "target": "ES2022",
     "lib": ["ES2022"],
 
-    /* Module */
     "module": "CommonJS",
     "moduleResolution": "Node",
 
-    /* Directories */
     "rootDir": "./src",
     "outDir": "./dist",
 
-    /* JavaScript Support */
-    "allowJs": false,
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["*"]
+    },
 
-    /* Emit */
+    "allowJs": false,
     "sourceMap": true,
     "removeComments": false,
 
-    /* Interop */
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
 
-    /* Type Checking */
     "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
@@ -32,8 +29,7 @@
     "skipLibCheck": true,
 
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-
+    "emitDecoratorMetadata": true
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist"]

@@ -18,6 +18,19 @@ enum UserStatus {
   SUSPENDED
 }
 
+enum BrokerType {
+  UPSTOX
+  GROWW
+  FYERS
+}
+
+enum BrokerStatus {
+  ACTIVE
+  DISCONNECTED
+  EXPIRED
+  ERROR
+}
+
 model User {
   id              String         @id @default(cuid())
   firstName       String
@@ -34,6 +47,8 @@ model User {
 
   refreshTokens   RefreshToken[]
 
+  brokers Broker[]
+
   @@map("users")
 }
 
@@ -49,4 +64,48 @@ model RefreshToken {
   createdAt  DateTime @default(now())
 
   @@map("refresh_tokens")
+}
+
+model Broker {
+  id          String         @id @default(cuid())
+
+  userId      String
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  brokerType  BrokerType
+
+  displayName String
+
+  status      BrokerStatus   @default(DISCONNECTED)
+
+  isDefault   Boolean        @default(false)
+
+  credential  BrokerCredential?
+
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@index([userId])
+  @@index([brokerType])
+
+  @@map("brokers")
+}
+
+model BrokerCredential {
+  id             String   @id @default(cuid())
+
+  brokerId       String   @unique
+  broker         Broker   @relation(fields: [brokerId], references: [id], onDelete: Cascade)
+
+  brokerUserId   String?
+
+  accessToken    String?  @db.Text
+  refreshToken   String?  @db.Text
+
+  tokenExpiresAt DateTime?
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("broker_credentials")
 }
