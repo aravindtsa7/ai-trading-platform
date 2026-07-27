@@ -54,4 +54,20 @@ async getProfile(accessToken: string) {
     return response.data;
 }
 
+async getFunds(accessToken: string) {
+    const token = decrypt(accessToken);
+
+    const response = await httpClient.get(
+        `${env.UPSTOX_BASE_URL}/user/get-funds-and-margin`,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: "application/json",
+            },
+        }
+    );
+
+    return response.data;
+}
+
 }

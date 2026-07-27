@@ -48,4 +48,10 @@ router.get(
     controller.getProfile.bind(controller)
 );
 
+router.get(
+    "/funds/:brokerId",
+    authenticate,
+    controller.getFunds.bind(controller)
+);
+
 export default router;

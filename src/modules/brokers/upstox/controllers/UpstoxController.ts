@@ -1,10 +1,11 @@
-import { Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from "express";
 
 import { ApiResponse } from "../../../../common/responses/ApiResponse";
 import { AuthenticatedRequest } from "../../../../middleware/auth.middleware";
 
 import { UpstoxService } from "../services/UpstoxService";
 import { BrokerService } from "../../services/BrokerService";
+import { AppError } from "../../../../common/exceptions/AppError";
 
 export class UpstoxController {
   constructor(
@@ -12,37 +13,37 @@ export class UpstoxController {
     private readonly brokerService: BrokerService
   ) { }
 
-async getProfile(
+  async getProfile(
     req: AuthenticatedRequest,
     res: Response,
     next: NextFunction
-): Promise<void> {
+  ): Promise<void> {
     try {
-        const brokerId = String(req.params.brokerId);
+      const brokerId = String(req.params.brokerId);
 
-        const credential =
-            await this.brokerService.getBrokerCredential(
-                brokerId
-            );
+      const credential =
+        await this.brokerService.getBrokerCredential(
+          brokerId
+        );
 
-        if (!credential || !credential.accessToken) {
-            throw new Error("Broker is not connected.");
-        }
+      if (!credential || !credential.accessToken) {
+        throw new Error("Broker is not connected.");
+      }
 
-        const profile =
-            await this.upstoxService.getProfile(
-                credential.accessToken
-            );
+      const profile =
+        await this.upstoxService.getProfile(
+          credential.accessToken
+        );
 
-        ApiResponse.success(res, {
-            message: "Profile fetched successfully",
-            data: profile,
-        });
+      ApiResponse.success(res, {
+        message: "Profile fetched successfully",
+        data: profile,
+      });
 
     } catch (error) {
-        next(error);
+      next(error);
     }
-}
+  }
 
   async login(
     req: AuthenticatedRequest,
@@ -95,6 +96,33 @@ async getProfile(
       next(error);
     }
   }
-  
+
+async getFunds(
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    const brokerId = String(req.params.brokerId);
+
+    const credential = await this.brokerService.getBrokerCredential(brokerId);
+
+    if (!credential || !credential.accessToken) {
+      throw new AppError("Broker is not connected.", 400);
+    }
+
+    const funds = await this.upstoxService.getFunds(
+      credential.accessToken
+    );
+
+    ApiResponse.success(res, {
+      message: "Funds fetched successfully",
+      data: funds,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 
 }
