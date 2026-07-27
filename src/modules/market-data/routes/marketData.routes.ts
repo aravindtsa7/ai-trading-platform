@@ -26,4 +26,10 @@ router.get(
   controller.getHistoricalCandles.bind(controller)
 );
 
+router.post(
+  "/quote/:brokerId",
+  authenticate,
+  controller.getLiveQuote.bind(controller)
+);
+
 export default router;

@@ -32,4 +32,37 @@ export class MarketDataService {
       throw error;
     }
   }
+
+  async getLiveQuote(
+  accessToken: string,
+  instrumentKeys: string[]
+) {
+  try {
+    const token = decrypt(accessToken);
+
+    const response = await httpClient.get(
+      `${env.UPSTOX_BASE_URL}/market-quote/quotes`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+        params: {
+          instrument_key: instrumentKeys.join(","),
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error: any) {
+    console.error("========================================");
+    console.error("Upstox Live Quote Error");
+    console.error("Status :", error.response?.status);
+    console.error("Data   :", error.response?.data);
+    console.error("========================================");
+
+    throw error;
+  }
+}
+
 }

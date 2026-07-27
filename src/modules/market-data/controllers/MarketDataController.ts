@@ -7,42 +7,76 @@ import { AppError } from "../../../common/exceptions/AppError";
 import { BrokerService } from "../../brokers/services/BrokerService";
 import { MarketDataService } from "../services/MarketDataService";
 import { HistoricalCandleSchema } from "../validators/HistoricalCandleValidator";
+import { LiveQuoteSchema } from "../validators/LiveQuoteValidator";
 
 export class MarketDataController {
-  constructor(
-    private readonly brokerService: BrokerService,
-    private readonly marketDataService: MarketDataService
-  ) {}
-  
-  async getHistoricalCandles(
-    req: AuthenticatedRequest,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
-    try {
-      const brokerId = String(req.params.brokerId);
+    constructor(
+        private readonly brokerService: BrokerService,
+        private readonly marketDataService: MarketDataService
+    ) { }
 
-      const credential =
-        await this.brokerService.getBrokerCredential(brokerId);
+    async getHistoricalCandles(
+        req: AuthenticatedRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void> {
+        try {
+            const brokerId = String(req.params.brokerId);
 
-      if (!credential || !credential.accessToken) {
-        throw new AppError("Broker is not connected.", 400);
-      }
+            const credential =
+                await this.brokerService.getBrokerCredential(brokerId);
 
-      const dto = HistoricalCandleSchema.parse(req.query);
+            if (!credential || !credential.accessToken) {
+                throw new AppError("Broker is not connected.", 400);
+            }
 
-      const result =
-        await this.marketDataService.getHistoricalCandles(
-          credential.accessToken,
-          dto
-        );
+            const dto = HistoricalCandleSchema.parse(req.query);
 
-      ApiResponse.success(res, {
-        message: "Historical candles fetched successfully",
-        data: result,
-      });
-    } catch (error) {
-      next(error);
+            const result =
+                await this.marketDataService.getHistoricalCandles(
+                    credential.accessToken,
+                    dto
+                );
+
+            ApiResponse.success(res, {
+                message: "Historical candles fetched successfully",
+                data: result,
+            });
+        } catch (error) {
+            next(error);
+        }
     }
-  }
+
+    async getLiveQuote(
+        req: AuthenticatedRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void> {
+        try {
+            const brokerId = String(req.params.brokerId);
+
+            const credential =
+                await this.brokerService.getBrokerCredential(brokerId);
+
+            if (!credential || !credential.accessToken) {
+                throw new AppError("Broker is not connected.", 400);
+            }
+
+            const dto = LiveQuoteSchema.parse(req.body);
+
+            const result =
+                await this.marketDataService.getLiveQuote(
+                    credential.accessToken,
+                    dto.instrumentKeys
+                );
+
+            ApiResponse.success(res, {
+                message: "Live quote fetched successfully",
+                data: result,
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
 }
