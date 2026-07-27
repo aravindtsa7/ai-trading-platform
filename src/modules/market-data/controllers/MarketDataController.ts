@@ -8,6 +8,7 @@ import { BrokerService } from "../../brokers/services/BrokerService";
 import { MarketDataService } from "../services/MarketDataService";
 import { HistoricalCandleSchema } from "../validators/HistoricalCandleValidator";
 import { LiveQuoteSchema } from "../validators/LiveQuoteValidator";
+import { OptionChainSchema } from "../validators/OptionChainValidator";
 
 export class MarketDataController {
     constructor(
@@ -72,6 +73,39 @@ export class MarketDataController {
 
             ApiResponse.success(res, {
                 message: "Live quote fetched successfully",
+                data: result,
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async getOptionChain(
+        req: AuthenticatedRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void> {
+        try {
+            const brokerId = String(req.params.brokerId);
+
+            const credential =
+                await this.brokerService.getBrokerCredential(brokerId);
+
+            if (!credential || !credential.accessToken) {
+                throw new AppError("Broker is not connected.", 400);
+            }
+
+            const dto = OptionChainSchema.parse(req.query);
+
+            const result =
+                await this.marketDataService.getOptionChain(
+                    credential.accessToken,
+                    dto.instrumentKey,
+                    dto.expiryDate
+                );
+
+            ApiResponse.success(res, {
+                message: "Option chain fetched successfully",
                 data: result,
             });
         } catch (error) {

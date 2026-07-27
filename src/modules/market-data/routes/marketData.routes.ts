@@ -32,4 +32,10 @@ router.post(
   controller.getLiveQuote.bind(controller)
 );
 
+router.get(
+  "/option-chain/:brokerId",
+  authenticate,
+  controller.getOptionChain.bind(controller)
+);
+
 export default router;

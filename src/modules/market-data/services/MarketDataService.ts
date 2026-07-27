@@ -65,4 +65,38 @@ export class MarketDataService {
   }
 }
 
+async getOptionChain(
+  accessToken: string,
+  instrumentKey: string,
+  expiryDate: string
+) {
+  try {
+    const token = decrypt(accessToken);
+
+    const response = await httpClient.get(
+      `${env.UPSTOX_BASE_URL}/option/chain`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+        params: {
+          instrument_key: instrumentKey,
+          expiry_date: expiryDate,
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error: any) {
+    console.error("========================================");
+    console.error("Upstox Option Chain Error");
+    console.error("Status :", error.response?.status);
+    console.error("Data   :", error.response?.data);
+    console.error("========================================");
+
+    throw error;
+  }
+}
+
 }
