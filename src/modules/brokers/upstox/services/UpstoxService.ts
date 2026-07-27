@@ -1,6 +1,7 @@
 import { httpClient } from "../../../../common/http";
 import { env } from "../../../../config";
 import { decrypt } from "../../../../common/crypto";
+import { PlaceOrderDto } from "../dto/PlaceOrderDto";
 
 export class UpstoxService {
 
@@ -116,6 +117,65 @@ async getOrders(accessToken: string) {
   );
 
   return response.data;
+}
+
+async getTrades(accessToken: string) {
+  const token = decrypt(accessToken);
+
+  const response = await httpClient.get(
+    `${env.UPSTOX_BASE_URL}/order/trades/get-trades-for-day`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
+    }
+  );
+
+  return response.data;
+}
+
+async placeOrder(
+  accessToken: string,
+  order: PlaceOrderDto
+) {
+  try {
+    const token = decrypt(accessToken);
+
+    const response = await httpClient.post(
+      `${env.UPSTOX_BASE_URL}/order/place`,
+      {
+        quantity: order.quantity,
+        product: order.product,
+        validity: order.validity,
+        price: order.price,
+        tag: order.tag,
+        instrument_token: order.instrumentToken,
+        order_type: order.orderType,
+        transaction_type: order.transactionType,
+        disclosed_quantity: order.disclosedQuantity,
+        trigger_price: order.triggerPrice,
+        is_amo: order.isAmo,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error: any) {
+    console.error("========================================");
+    console.error("Upstox Place Order Error");
+    console.error("Status :", error.response?.status);
+    console.error("Data   :", error.response?.data);
+    console.error("========================================");
+
+    throw error;
+  }
 }
 
 }

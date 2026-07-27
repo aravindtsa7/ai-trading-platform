@@ -72,4 +72,16 @@ router.get(
   controller.getOrders.bind(controller)
 );
 
+router.get(
+  "/trades/:brokerId",
+  authenticate,
+  controller.getTrades.bind(controller)
+);
+
+router.post(
+  "/orders/:brokerId",
+  authenticate,
+  controller.placeOrder.bind(controller)
+);
+
 export default router;

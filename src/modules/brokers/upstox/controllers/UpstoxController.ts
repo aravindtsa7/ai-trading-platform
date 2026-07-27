@@ -6,6 +6,7 @@ import { AuthenticatedRequest } from "../../../../middleware/auth.middleware";
 import { UpstoxService } from "../services/UpstoxService";
 import { BrokerService } from "../../services/BrokerService";
 import { AppError } from "../../../../common/exceptions/AppError";
+import { PlaceOrderSchema } from "../validators/PlaceOrderValidator";
 
 export class UpstoxController {
   constructor(
@@ -203,6 +204,74 @@ async getOrders(
       message: "Orders fetched successfully",
       data: orders,
     });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async getTrades(
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    const brokerId = String(req.params.brokerId);
+
+    const credential =
+      await this.brokerService.getBrokerCredential(
+        brokerId
+      );
+
+    if (!credential || !credential.accessToken) {
+      throw new AppError("Broker is not connected.", 400);
+    }
+
+    const trades =
+      await this.upstoxService.getTrades(
+        credential.accessToken
+      );
+
+    ApiResponse.success(res, {
+      message: "Trades fetched successfully",
+      data: trades,
+    });
+
+  } catch (error) {
+    next(error);
+  }
+}
+
+async placeOrder(
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    const brokerId = String(req.params.brokerId);
+
+    const credential =
+      await this.brokerService.getBrokerCredential(
+        brokerId
+      );
+
+    if (!credential || !credential.accessToken) {
+      throw new AppError("Broker is not connected.", 400);
+    }
+
+    const order =
+      PlaceOrderSchema.parse(req.body);
+
+    const result =
+      await this.upstoxService.placeOrder(
+        credential.accessToken,
+        order
+      );
+
+    ApiResponse.success(res, {
+      message: "Order placed successfully",
+      data: result,
+    });
+
   } catch (error) {
     next(error);
   }
