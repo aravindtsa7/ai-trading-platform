@@ -18,6 +18,14 @@ export class BrokerService {
         );
     }
 
+    async saveBrokerCredential(
+        credential: CreateBrokerCredentialData
+    ) {
+        return this.brokerRepository.saveBrokerCredential(
+            credential
+        );
+    }
+
     async getBroker(
         id: string,
         userId: string
@@ -25,6 +33,14 @@ export class BrokerService {
         return this.brokerRepository.findBrokerById(
             id,
             userId
+        );
+    }
+
+    async getBrokerCredential(
+        brokerId: string
+    ) {
+        return this.brokerRepository.findBrokerCredential(
+            brokerId
         );
     }
 

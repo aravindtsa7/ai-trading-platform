@@ -12,8 +12,9 @@ export interface CreateBrokerData {
 }
 
 export interface CreateBrokerCredentialData {
+    brokerId: string;
     brokerUserId?: string;
-    accessToken?: string;
+    accessToken: string;
     refreshToken?: string;
     tokenExpiresAt?: Date;
 }
@@ -28,15 +29,23 @@ export interface IBrokerRepository {
 
     findUserBrokers(userId: string): Promise<Broker[]>;
 
-updateBroker(
-    id: string,
-    userId: string,
-    data: Partial<CreateBrokerData>
-): Promise<Broker>;
+    updateBroker(
+        id: string,
+        userId: string,
+        data: Partial<CreateBrokerData>
+    ): Promise<Broker>;
 
-deleteBroker(
-    id: string,
-    userId: string
-): Promise<void>;
+    deleteBroker(
+        id: string,
+        userId: string
+    ): Promise<void>;
+
+    saveBrokerCredential(
+        data: CreateBrokerCredentialData
+    ): Promise<BrokerCredential>;
+
+    findBrokerCredential(
+    brokerId: string
+): Promise<BrokerCredential | null>;
 
 }

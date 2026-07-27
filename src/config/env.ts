@@ -25,4 +25,6 @@ export const env = {
 
   UPSTOX_REDIRECT_URI: process.env.UPSTOX_REDIRECT_URI!,
 
+  UPSTOX_SANDBOX_ACCESS_TOKEN: process.env.UPSTOX_SANDBOX_ACCESS_TOKEN!,
+
 };

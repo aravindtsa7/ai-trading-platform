@@ -21,6 +21,33 @@ export class PrismaBrokerRepository implements IBrokerRepository {
         });
     }
 
+    async saveBrokerCredential(
+        data: CreateBrokerCredentialData
+    ): Promise<BrokerCredential> {
+        return prisma.brokerCredential.upsert({
+            where: {
+                brokerId: data.brokerId,
+            },
+            update: {
+                brokerUserId: data.brokerUserId,
+                accessToken: encrypt(data.accessToken),
+                refreshToken: data.refreshToken
+                    ? encrypt(data.refreshToken)
+                    : null,
+                tokenExpiresAt: data.tokenExpiresAt,
+            },
+            create: {
+                brokerId: data.brokerId,
+                brokerUserId: data.brokerUserId,
+                accessToken: encrypt(data.accessToken),
+                refreshToken: data.refreshToken
+                    ? encrypt(data.refreshToken)
+                    : null,
+                tokenExpiresAt: data.tokenExpiresAt,
+            },
+        });
+    }
+
     async findBrokerById(
         id: string,
         userId: string
@@ -93,6 +120,18 @@ export class PrismaBrokerRepository implements IBrokerRepository {
                 id,
             },
         });
+    }
+
+    async findBrokerCredential(
+        brokerId: string
+    ): Promise<BrokerCredential | null> {
+
+        return prisma.brokerCredential.findUnique({
+            where: {
+                brokerId,
+            },
+        });
+
     }
 
 }
