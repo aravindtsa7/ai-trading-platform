@@ -124,5 +124,89 @@ async getFunds(
   }
 }
 
+async getHoldings(
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    const brokerId = String(req.params.brokerId);
+
+    const credential =
+      await this.brokerService.getBrokerCredential(brokerId);
+
+    if (!credential || !credential.accessToken) {
+      throw new AppError("Broker is not connected.", 400);
+    }
+
+    const holdings =
+      await this.upstoxService.getHoldings(
+        credential.accessToken
+      );
+
+    ApiResponse.success(res, {
+      message: "Holdings fetched successfully",
+      data: holdings,
+    });
+
+  } catch (error) {
+    next(error);
+  }
+}
+
+async getPositions(
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    const brokerId = String(req.params.brokerId);
+
+    const credential = await this.brokerService.getBrokerCredential(brokerId);
+
+    if (!credential || !credential.accessToken) {
+      throw new AppError("Broker is not connected.", 400);
+    }
+
+    const positions = await this.upstoxService.getPositions(
+      credential.accessToken
+    );
+
+    ApiResponse.success(res, {
+      message: "Positions fetched successfully",
+      data: positions,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async getOrders(
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    const brokerId = String(req.params.brokerId);
+
+    const credential = await this.brokerService.getBrokerCredential(brokerId);
+
+    if (!credential || !credential.accessToken) {
+      throw new AppError("Broker is not connected.", 400);
+    }
+
+    const orders = await this.upstoxService.getOrders(
+      credential.accessToken
+    );
+
+    ApiResponse.success(res, {
+      message: "Orders fetched successfully",
+      data: orders,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 
 }

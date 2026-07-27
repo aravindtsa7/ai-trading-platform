@@ -54,4 +54,22 @@ router.get(
     controller.getFunds.bind(controller)
 );
 
+router.get(
+  "/holdings/:brokerId",
+  authenticate,
+  controller.getHoldings.bind(controller)
+);
+
+router.get(
+  "/positions/:brokerId",
+  authenticate,
+  controller.getPositions.bind(controller)
+);
+
+router.get(
+  "/orders/:brokerId",
+  authenticate,
+  controller.getOrders.bind(controller)
+);
+
 export default router;

@@ -70,4 +70,52 @@ async getFunds(accessToken: string) {
     return response.data;
 }
 
+async getHoldings(accessToken: string) {
+  const token = decrypt(accessToken);
+
+  const response = await httpClient.get(
+    `${env.UPSTOX_BASE_URL}/portfolio/long-term-holdings`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
+    }
+  );
+
+  return response.data;
+}
+
+async getPositions(accessToken: string) {
+  const token = decrypt(accessToken);
+
+  const response = await httpClient.get(
+    `${env.UPSTOX_BASE_URL}/portfolio/short-term-positions`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
+    }
+  );
+
+  return response.data;
+}
+
+async getOrders(accessToken: string) {
+  const token = decrypt(accessToken);
+
+  const response = await httpClient.get(
+    `${env.UPSTOX_BASE_URL}/order/retrieve-all`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
+    }
+  );
+
+  return response.data;
+}
+
 }
