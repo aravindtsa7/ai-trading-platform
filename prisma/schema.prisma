@@ -109,3 +109,47 @@ model BrokerCredential {
 
   @@map("broker_credentials")
 }
+
+model Instrument {
+  id                String   @id @default(cuid())
+
+  exchange          String
+  segment           String
+
+  instrumentKey     String   @unique
+
+  exchangeToken     String?
+
+  tradingSymbol     String
+
+  name              String?
+
+  instrumentType    String?
+
+  expiry            DateTime?
+
+  strikePrice       Float?
+
+  optionType        String?
+
+  lotSize           Int?
+
+  tickSize          Float?
+
+  freezeQuantity    Int?
+
+  minimumLot        Int?
+
+  isin              String?
+
+  status            String?
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([tradingSymbol])
+  @@index([name])
+  @@index([exchange])
+  @@index([segment])
+  @@index([expiry])
+}

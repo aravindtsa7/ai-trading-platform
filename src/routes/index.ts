@@ -3,6 +3,7 @@ import authRoutes from "../modules/auth/routes/auth.routes";
 import brokerRoutes from "../modules/brokers/routes/broker.routes";
 import upstoxRoutes from "../modules/brokers/upstox/routes";
 import marketDataRoutes from "../modules/market-data/routes/marketData.routes";
+import instrumentRoutes from "../modules/instruments/routes/instrument.routes";
 import healthRoutes from "./health.routes";
 import testRoutes from "./test.routes";
 
@@ -15,5 +16,5 @@ router.use("/auth", authRoutes);
 router.use("/brokers", brokerRoutes);
 router.use("/upstox", upstoxRoutes);
 router.use("/market-data", marketDataRoutes);
-
+router.use("/instruments", instrumentRoutes);
 export default router;
